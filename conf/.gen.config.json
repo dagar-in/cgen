@@ -1,0 +1,30 @@
+{
+  "templates": {
+    "path": "templates",
+    "destination": "src",
+    "variables": [
+      {
+        "name": "Name",
+        "value": "John"
+      },
+      {
+        "name": "ShowDetails",
+        "value": "true"
+      },
+      {
+        "name": "Age",
+        "value": "30"
+      },
+      {
+        "name": "Location",
+        "value": "New York"
+      }
+    ],
+    "fileRenames": [
+      {
+        "from": "_demo",
+        "to": "Demo"
+      }
+    ]
+  }
+}

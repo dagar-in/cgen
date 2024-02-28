@@ -1,0 +1,7 @@
+
+Hello, {{.Name}}!
+
+{{if .ShowDetails}}
+Your age is {{.Age}}.
+You are from {{.Location}}.
+{{end}}
