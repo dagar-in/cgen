@@ -1,0 +1,65 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.17'
+
+      - name: Build for Windows
+        run: GOOS=windows GOARCH=amd64 go build -o cli-codegen-windows-amd64.exe
+
+      - name: Build for Linux
+        run: GOOS=linux GOARCH=amd64 go build -o cli-codegen-linux-amd64
+
+      - name: Build for macOS
+        run: GOOS=darwin GOARCH=amd64 go build -o cli-codegen-darwin-amd64
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Windows Build
+        uses: actions/upload-artifact@v2
+        with:
+          name: cli-codegen-windows-amd64
+          path: cli-codegen-windows-amd64-amd64.exe
+
+      - name: Upload Linux Build
+        uses: actions/upload-artifact@v2
+        with:
+          name: cli-codegen-linux-amd64
+          path: cli-codegen-linux-amd64
+
+      - name: Upload macOS Build
+        uses: actions/upload-artifact@v2
+        with:
+          name: cli-codegen-darwin-amd64
+          path: cli-codegen-darwin-amd64
